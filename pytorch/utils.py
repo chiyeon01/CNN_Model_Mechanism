@@ -257,7 +257,7 @@ class Custom_Dataset(Dataset):
 
 # 사전학습된 모델을 만드는 함수(create pretrained model function)
 # 모든 가중치는 DEFAULT로 선언(all weights = 'DEFAULT')
-def create_pretrained_model(model_name='alexnet', classifier_layer=None, make_summary=False):
+def create_pretrained_model(model_name='alexnet', classifier_layer=None, image_size=[224, 224], make_summary=False):
     if model_name == 'alexnet':
         model = models.alexnet(weights='DEFAULT')
         model.classifier = classifier_layer
@@ -294,7 +294,7 @@ def create_pretrained_model(model_name='alexnet', classifier_layer=None, make_su
 
     if make_summary:
         # 모델 정보 요약(model summary)
-        print(torchinfo.summary(model, input_size=[1, 3] + Config.image_size,
+        print(torchinfo.summary(model, input_size=[1, 3] + image_size,
                   col_names=['output_size', 'num_params', 'trainable'],
                   row_settings=['depth', 'var_names'],
                   depth=3))
