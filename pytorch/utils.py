@@ -77,7 +77,7 @@ class Trainer:
         # 모델 평가로 설정(model evaluation setting)
         self.model.eval()
 
-        with torch.no_grad:
+        with torch.no_grad():
             with tqdm(total = len(val_dataloader), desc="[Validating..] ", leave=True) as progress_bar:
                 for batch_idx, (images, labels) in enumerate(val_dataloader):
                     images = images.to(device)
@@ -141,7 +141,7 @@ class Trainer:
         # 모델 평가로 설정(model evaluation setting)
         self.model.eval()
 
-        with torch.no_grad:
+        with torch.no_grad():
             with tqdm(total = len(eval_dataloader), desc="[Evaluating..] ", leave=True) as progress_bar:
                 for batch_idx, (images, labels) in enumerate(eval_dataloader):
                     images = images.to(device)
