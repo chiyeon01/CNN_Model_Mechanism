@@ -187,8 +187,8 @@ class Predictor:
 
         pred_probas = []
 
-        model.to(device)
-        model.eval()
+        self.model.to(device)
+        self.model.eval()
 
         with torch.no_grad():
             with tqdm(total=len(test_dataloader), desc="[Predicting...] ", leave=True) as progress_bar:
