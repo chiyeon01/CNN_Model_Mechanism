@@ -1,3 +1,11 @@
+import torch
+from torch.utils.data import Dataset
+from tqdm import tqdm
+import torch.functional as F
+import numpy as np
+import cv2
+from torchvision import models
+
 class Trainer:
     def __init__(self, model=None, train_dataloader=None, val_dataloader=None, loss_fn=None, metric=False, optimizer=None):
         self.model = model
@@ -179,8 +187,8 @@ class Predictor:
 
         pred_probas = []
 
-        model.to(device)
-        model.eval()
+        self.model.to(device)
+        self.model.eval()
 
         with torch.no_grad():
             with tqdm(total=len(test_dataloader), desc="[Predicting...] ", leave=True) as progress_bar:
