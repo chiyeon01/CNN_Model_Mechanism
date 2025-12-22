@@ -1,28 +1,3 @@
-# Module import
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
-import torchinfo
-from torch.utils.data import Dataset, DataLoader
-from torchvision import models
-from torch.optim import SGD, Adagrad, RMSprop, Adam, AdamW
-import torchmetrics
-
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
-import cv2
-import albumentations as A
-from albumentations.pytorch import ToTensorV2
-from tqdm import tqdm
-from PIL import Image
-
-# Test Module
-from torchvision import datasets
-from torchvision.transforms import ToTensor
-from torchvision import transforms
-
 class Trainer:
     def __init__(self, model=None, train_dataloader=None, val_dataloader=None, loss_fn=None, metric=False, optimizer=None):
         self.model = model
@@ -233,7 +208,7 @@ class Custom_Dataset(Dataset):
         self.image_paths = image_paths
         self.targets = targets
         self.transform = transform
-    
+
     # 전체 건수 반환
     def __len__(self):
         return len(self.image_paths)
@@ -242,12 +217,12 @@ class Custom_Dataset(Dataset):
     def __getitem__(self, idx):
         # image는 ndarry.
         image = cv2.cvtColor(cv2.imread(self.image_paths[idx]), cv2.COLOR_BGR2RGB)
-        
+
         # albumentation 별도 적용.
         # albumentation에서 ToTensorV2를 별도로 적용.
         # 사실 이 로직이 작동하지 않으면 오류 발생.
         if self.transform is not None:
-            image = self.transform(image)['image']
+            image = self.transform(image=image)['image']
 
         if self.targets is not None:
             target = torch.tensor(self.targets[idx])
@@ -257,7 +232,7 @@ class Custom_Dataset(Dataset):
 
 # 사전학습된 모델을 만드는 함수(create pretrained model function)
 # 모든 가중치는 DEFAULT로 선언(all weights = 'DEFAULT')
-def create_pretrained_model(model_name='alexnet', classifier_layer=None, image_size=[224, 224], make_summary=False):
+def create_pretrained_model(model_name='alexnet', classifier_layer=None, make_summary=False):
     if model_name == 'alexnet':
         model = models.alexnet(weights='DEFAULT')
         model.classifier = classifier_layer
@@ -294,7 +269,7 @@ def create_pretrained_model(model_name='alexnet', classifier_layer=None, image_s
 
     if make_summary:
         # 모델 정보 요약(model summary)
-        print(torchinfo.summary(model, input_size=[1, 3] + image_size,
+        print(torchinfo.summary(model, input_size=[1, 3] + Config.image_size,
                   col_names=['output_size', 'num_params', 'trainable'],
                   row_settings=['depth', 'var_names'],
                   depth=3))
