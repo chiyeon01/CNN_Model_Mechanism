@@ -6,6 +6,7 @@ import numpy as np
 import cv2
 from torchvision import models
 
+# CNN 학습 Class
 class Trainer:
     def __init__(self, model=None, train_dataloader=None, val_dataloader=None, loss_fn=None, metric=False, optimizer=None):
         self.model = model
@@ -172,6 +173,7 @@ class Trainer:
     def get_trained_model(self):
         return self.model
 
+# CNN 예측 Class
 class Predictor:
     def __init__(self, model=None):
         self.model = model
@@ -208,6 +210,7 @@ class Predictor:
 
         return torch.tensor(final_result)
 
+# CNN Dataset
 class Custom_Dataset(Dataset):
     # 여기서 transform은 albumentations transform이라고 가정.
     # 모든 image는 OpenCV로 다룸.
@@ -283,3 +286,26 @@ def create_pretrained_model(model_name='alexnet', classifier_layer=None, image_s
                   depth=3))
 
     return model
+
+# Video를 Image로 만들어 저장하고, 경로를 리스트로 반환하는 함수.
+def video2images(video_file_paths, save_dirname):
+    image_file_paths = []
+    for video_file_path in video_file_path:
+        video = cv2.VideoCapture(video_file_path)
+        pre_filename = video_file_path[: video_file_path.find('.')]
+        cnt = 0
+
+        while video.isOpened():
+            ret, frame = video.read()
+
+            if not ret:
+                break
+
+            filepath = f"{pre_filename}_{cnt}.jpg"
+            cv2.imwrite(os.path.join(save_dirname + filepath), frame)
+            image_file_paths.append(save_dirname + filepath)
+            cnt += 1
+
+        video.release()
+
+    return image_file_paths
